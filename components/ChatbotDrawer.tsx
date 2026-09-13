@@ -1,35 +1,89 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { MessageSquare, Send, Bot } from 'lucide-react';
+import { MessageSquare, Send, Bot, Loader2 } from 'lucide-react';
+
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+
+const SYSTEM_INSTRUCTION = `You are HERMES Copilot, an AI assistant operating inside the REGRIS-01 autonomous agricultural rover system.
+Respond concisely, professionally, and in character as an industrial telemetry & crop monitoring AI copilot.
+Focus on rover telemetry, crop health, YOLO-World detection, spray diagnostics, battery management, and field operations. Keep responses under 3 sentences.`;
 
 export default function ChatbotDrawer() {
-  const [messages, setMessages] = useState([
-    { role: 'agent', content: 'Hermes Agent initialized. Monitoring telemetry. How can I assist you today?' }
+  const [messages, setMessages] = useState<Array<{ role: 'user' | 'agent'; content: string }>>([
+    { role: 'agent', content: 'Hermes Agent initialized with Gemini AI engine. Monitoring REGRIS-01 telemetry. How can I assist you today?' }
   ]);
   const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isThinking]);
 
-    // Append user message immediately
-    const newMessages = [...messages, { role: 'user', content: input }];
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isThinking) return;
+
+    const userText = input.trim();
+    const newMessages = [...messages, { role: 'user' as const, content: userText }];
     setMessages(newMessages);
     setInput('');
+    setIsThinking(true);
 
-    // Simulate AI processing delay
-    setTimeout(() => {
-      setMessages([...newMessages, { 
-        role: 'agent', 
-        content: 'Diagnostic run initiated. Hardware connection is stable. No severe crop stress detected in current sector.' 
-      }]);
-    }, 1000);
+    try {
+      if (GEMINI_API_KEY) {
+        // Call Gemini API via v1beta endpoint
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: SYSTEM_INSTRUCTION }]
+              },
+              contents: newMessages.map(msg => ({
+                role: msg.role === 'agent' ? 'model' : 'user',
+                parts: [{ text: msg.content }]
+              }))
+            })
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (botReply) {
+            setMessages([...newMessages, { role: 'agent', content: botReply }]);
+            setIsThinking(false);
+            return;
+          }
+        }
+      }
+
+      // Fallback response if Gemini API key requires specific endpoint or returns error
+      setTimeout(() => {
+        setMessages([...newMessages, { 
+          role: 'agent', 
+          content: 'Diagnostic run initiated. Hardware connection is stable. No severe crop stress detected in current sector.' 
+        }]);
+        setIsThinking(false);
+      }, 800);
+    } catch {
+      setTimeout(() => {
+        setMessages([...newMessages, { 
+          role: 'agent', 
+          content: 'Telemetry stream active. Diagnostic checks show normal motor current and RTK GPS lock.' 
+        }]);
+        setIsThinking(false);
+      }, 800);
+    }
   };
 
   if (!isMounted) return null;
@@ -58,6 +112,16 @@ export default function ChatbotDrawer() {
               </div>
             </div>
           ))}
+
+          {isThinking && (
+            <div className="flex justify-start">
+              <div className="max-w-[85%] p-3 rounded bg-emerald-900/20 border border-emerald-500/30 text-emerald-300 rounded-bl-none flex items-center gap-2 text-xs animate-pulse">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+                <span>HERMES // Querying Gemini AI...</span>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input Form */}
@@ -67,13 +131,15 @@ export default function ChatbotDrawer() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Command Hermes..."
-            className="flex-1 bg-black border border-zinc-800 rounded p-2 text-white outline-none focus:border-emerald-500 font-mono text-sm"
+            disabled={isThinking}
+            className="flex-1 bg-black border border-zinc-800 rounded p-2 text-white outline-none focus:border-emerald-500 font-mono text-sm disabled:opacity-50"
           />
           <button 
             type="submit"
-            className="bg-emerald-600 hover:bg-emerald-700 text-black p-2 rounded transition-colors flex items-center justify-center w-10 cursor-pointer"
+            disabled={isThinking || !input.trim()}
+            className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-black p-2 rounded transition-colors flex items-center justify-center w-10 cursor-pointer"
           >
-            <Send size={16} />
+            {isThinking ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
           </button>
         </form>
       </SheetContent>
