@@ -4,6 +4,7 @@ import * as React from "react"
 import { useState, useEffect } from "react"
 import { ref, onValue } from "firebase/database"
 import { db } from "@/lib/firebase"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Activity,
   AlertOctagon,
@@ -87,11 +88,51 @@ export default function OperationsPage() {
     }
   }, [])
 
-  if (!isMounted) {
+  if (!isMounted || !telemetry) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] font-mono text-xs text-amber-500 space-y-2">
-        <Radio className="w-6 h-6 animate-pulse" />
-        <span>INITIALIZING_OPERATIONS_COMMAND_CENTER...</span>
+      <div className="space-y-6 font-mono text-xs select-none">
+        {/* Top Status Bar Skeleton */}
+        <div className="p-4 bg-[#0D0D11] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-9 h-9 bg-zinc-800" />
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-48 bg-zinc-800" />
+              <Skeleton className="h-3.5 w-72 bg-zinc-800" />
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-8 w-24 bg-zinc-800" />
+            <Skeleton className="h-8 w-28 bg-zinc-800" />
+            <Skeleton className="h-9 w-32 bg-zinc-800" />
+          </div>
+        </div>
+
+        {/* Main Operations Grid: Video Container (2 cols) & Terminal Log Sidebar (1 col) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main 16:9 Video Container Section Skeleton (2 cols) */}
+          <div className="lg:col-span-2 space-y-4 p-5 bg-[#0D0D11] border border-[#27272A]">
+            <div className="flex justify-between items-center border-b border-[#27272A] pb-3">
+              <div className="flex gap-2">
+                <Skeleton className="h-9 w-48 bg-zinc-800" />
+                <Skeleton className="h-9 w-40 bg-zinc-800" />
+              </div>
+              <Skeleton className="h-4 w-32 bg-zinc-800" />
+            </div>
+
+            {/* 16:9 Video Stream Placeholder Skeleton */}
+            <Skeleton className="relative aspect-video w-full bg-zinc-800 border border-[#27272A]" />
+          </div>
+
+          {/* Terminal-Style Log Component Sidebar Skeleton (1 col) */}
+          <div className="p-5 bg-[#0D0D11] border border-[#27272A] flex flex-col space-y-3">
+            <div className="flex justify-between items-center border-b border-[#27272A] pb-3">
+              <Skeleton className="h-5 w-44 bg-zinc-800" />
+              <Skeleton className="h-4 w-20 bg-zinc-800" />
+            </div>
+
+            <Skeleton className="flex-1 bg-zinc-800 min-h-[380px] w-full" />
+          </div>
+        </div>
       </div>
     )
   }

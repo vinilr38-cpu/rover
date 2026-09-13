@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Mock historical data for the chart
 const historicalData = {
@@ -42,7 +43,31 @@ export default function ReportsPage() {
     }
   }, []);
 
-  if (!isMounted || !telemetry) return <div className="p-8 text-white font-mono">Connecting to Rover telemetry stream...</div>;
+  if (!isMounted || !telemetry) {
+    return (
+      <div className="p-6 space-y-6 text-white font-mono bg-[#09090B] min-h-screen">
+        {/* Title Skeleton */}
+        <Skeleton className="h-7 w-80 bg-zinc-800" />
+        
+        {/* KPI Cards Skeleton Grid (4 cards matching exact grid dimensions) */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Skeleton className="h-20 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+          <Skeleton className="h-20 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+          <Skeleton className="h-20 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+          <Skeleton className="h-20 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+        </div>
+
+        {/* Infection Analytics Chart Container Skeleton */}
+        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded space-y-4">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-6 w-44 bg-zinc-800" />
+            <Skeleton className="h-9 w-32 bg-zinc-800" />
+          </div>
+          <Skeleton className="h-72 w-full bg-zinc-800" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6 text-white font-mono bg-[#09090B] min-h-screen">
