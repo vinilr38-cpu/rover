@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import ChatbotDrawer from "@/components/ChatbotDrawer";
+import PageTransition from "@/components/PageTransition";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -44,7 +45,9 @@ export default function RootLayout({
           {/* Main Content Area (Offset left by 64, top by 16 for header) */}
           <main className="flex-1 pl-64 pt-16 min-h-screen bg-[#09090B] industrial-grid">
             <div className="p-6 md:p-8 max-w-7xl mx-auto">
-              {children}
+              <PageTransition>
+                {children}
+              </PageTransition>
             </div>
           </main>
 
