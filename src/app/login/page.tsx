@@ -1,109 +1,111 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import Link from "next/link"
-import { Shield, Key, Lock, Terminal, ArrowRight, CheckCircle2 } from "lucide-react"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { AlertTriangle, Lock, ShieldAlert, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
-  const [operatorId, setOperatorId] = React.useState("OP-9942")
-  const [accessKey, setAccessKey] = React.useState("")
-  const [authStatus, setAuthStatus] = React.useState<"IDLE" | "AUTHENTICATING" | "SUCCESS">("IDLE")
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setAuthStatus("AUTHENTICATING")
-    setTimeout(() => {
-      setAuthStatus("SUCCESS")
-    }, 1200)
-  }
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/operations');
+    } catch (err: any) {
+      console.error('Firebase Auth Login Error:', err);
+      setError(err.message || 'Authentication failed. Access denied for provided credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center font-mono">
-      <div className="w-full max-w-md bg-[#0D0D11] border border-[#27272A] p-6 space-y-6 shadow-2xl relative">
-        {/* Corner Accents */}
-        <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-amber-500" />
-        <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-amber-500" />
-        <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-amber-500" />
-        <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-amber-500" />
-
-        <div className="border-b border-[#27272A] pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-amber-500" />
-            <div>
-              <h1 className="font-bold text-slate-100 text-sm">GATEKEEPER_AUTH // R01</h1>
-              <p className="text-[10px] text-zinc-500">CLEARANCE PROTOCOL L5</p>
-            </div>
+    <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-6 text-white font-mono">
+      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 rounded space-y-6 shadow-2xl relative">
+        {/* Header with Red AlertTriangle Icon & Banner */}
+        <div className="text-center space-y-3 border-b border-zinc-800 pb-6">
+          <div className="w-12 h-12 bg-red-500/10 border border-red-500/40 text-red-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+            <AlertTriangle size={24} />
           </div>
-          <span className="text-[9px] border border-amber-500/40 text-amber-400 bg-amber-500/10 px-2 py-0.5">
-            RESTRICTED
-          </span>
+          <h1 className="text-red-500 font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-1.5">
+            <ShieldAlert size={14} />
+            <span>RESTRICTED ACCESS // AUTHORIZED PERSONNEL ONLY</span>
+          </h1>
+          <p className="text-[10px] text-zinc-500 tracking-widest uppercase">
+            REGRIS-01 AUTONOMOUS COMMAND GATEWAY
+          </p>
         </div>
 
-        {authStatus === "SUCCESS" ? (
-          <div className="p-6 bg-[#09090B] border border-emerald-500/40 text-center space-y-3">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-            <h3 className="text-sm font-bold text-white">AUTHENTICATION_GRANTED</h3>
-            <p className="text-xs text-zinc-400">OPERATOR: {operatorId} VERIFIED</p>
-            <div className="pt-2">
-              <Link
-                href="/operations"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 text-black font-bold text-xs hover:bg-emerald-400 transition-all"
-              >
-                PROCEED TO OPERATIONS <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+        {/* Authentication Form */}
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-xs text-zinc-400 block font-bold tracking-wide">
+              OPERATOR EMAIL
+            </label>
+            <input 
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="operator@regris.ai"
+              required
+              className="w-full bg-black border border-zinc-800 rounded p-3 text-white outline-none focus:border-emerald-500 font-mono text-sm placeholder:text-zinc-600 transition-colors"
+            />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs text-zinc-400 flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5 text-amber-500" /> OPERATOR_ID
-              </label>
-              <input
-                type="text"
-                value={operatorId}
-                onChange={(e) => setOperatorId(e.target.value)}
-                required
-                className="w-full bg-[#09090B] border border-[#27272A] px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-amber-500 font-mono"
-              />
-            </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs text-zinc-400 flex items-center gap-1.5">
-                <Key className="w-3.5 h-3.5 text-amber-500" /> ACCESS_KEY_TOKEN
-              </label>
-              <input
-                type="password"
-                value={accessKey}
-                onChange={(e) => setAccessKey(e.target.value)}
-                placeholder="••••••••••••••••"
-                required
-                className="w-full bg-[#09090B] border border-[#27272A] px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-amber-500 font-mono placeholder:text-zinc-600"
-              />
-            </div>
+          <div className="space-y-2">
+            <label className="text-xs text-zinc-400 block font-bold tracking-wide">
+              ACCESS PASSWORD
+            </label>
+            <input 
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••••"
+              required
+              className="w-full bg-black border border-zinc-800 rounded p-3 text-white outline-none focus:border-emerald-500 font-mono text-sm placeholder:text-zinc-600 transition-colors"
+            />
+          </div>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={authStatus === "AUTHENTICATING"}
-                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
-              >
-                {authStatus === "AUTHENTICATING" ? (
-                  <>VERIFYING_CREDENTIALS...</>
-                ) : (
-                  <>
-                    <Lock className="w-4 h-4" /> AUTHENTICATE_SESSION
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        )}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-black font-extrabold p-3 rounded transition-all uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>AUTHENTICATING_SESSION...</span>
+              </>
+            ) : (
+              <>
+                <Lock size={16} />
+                <span>AUTHENTICATE</span>
+              </>
+            )}
+          </button>
 
-        <div className="text-[10px] text-zinc-600 text-center border-t border-[#27272A] pt-3">
-          SECURE ENCRYPTED INGRESS // PORT 443 // HARDWARE ID MATCHED
+          {/* Red Error Message display below the button */}
+          {error && (
+            <div className="p-3 bg-red-950/80 border border-red-500/60 rounded text-red-400 text-xs font-mono animate-pulse">
+              <span className="font-bold">AUTH_FAILURE:</span> {error}
+            </div>
+          )}
+        </form>
+
+        <div className="text-[10px] text-zinc-600 text-center border-t border-zinc-800 pt-4">
+          SECURE PROTOCOL TLS v1.3 // FIREBASE AUTH INGRESS
         </div>
       </div>
     </div>
-  )
+  );
 }
