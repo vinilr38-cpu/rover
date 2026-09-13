@@ -1,9 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
+
+// Dynamically import RoverMap with { ssr: false } to prevent window undefined errors
+const RoverMap = dynamic(() => import('@/components/RoverMap'), { ssr: false });
 
 // Mock historical data for the chart
 const historicalData = {
@@ -65,9 +69,18 @@ export default function ReportsPage() {
           </div>
           <Skeleton className="h-72 w-full bg-zinc-800" />
         </div>
+
+        {/* Map & Mission Log Skeleton Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-80 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+          <Skeleton className="h-80 w-full bg-zinc-800 rounded border border-zinc-800/80" />
+        </div>
       </div>
     );
   }
+
+  const roverLat = telemetry.gps?.lat ?? 13.1234;
+  const roverLng = telemetry.gps?.lng ?? 77.5678;
 
   return (
     <div className="p-6 space-y-6 text-white font-mono bg-[#09090B] min-h-screen">
@@ -127,6 +140,49 @@ export default function ReportsPage() {
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Dynamic Map & Mission Log 2-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column: Dynamic RoverMap inside h-80 border-zinc-800 Container */}
+        <div className="h-80 w-full bg-zinc-900 border border-zinc-800 rounded overflow-hidden relative">
+          <RoverMap lat={roverLat} lng={roverLng} />
+        </div>
+
+        {/* Right Column: Mission Log Card Terminal-Style List */}
+        <div className="h-80 p-5 bg-zinc-900 border border-zinc-800 rounded flex flex-col justify-between font-mono">
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-emerald-400 border-b border-zinc-800 pb-2 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              // MISSION_LOG // RTK_TELEMETRY
+            </h3>
+            <div className="space-y-3 text-xs text-zinc-300">
+              <div className="flex justify-between border-b border-zinc-800/60 pb-2">
+                <span className="text-zinc-500">ROVER_ID:</span>
+                <span className="font-bold text-white">{telemetry.rover_id ?? "REGRIS-01"}</span>
+              </div>
+              <div className="flex justify-between border-b border-zinc-800/60 pb-2">
+                <span className="text-zinc-500">GPS_LATITUDE:</span>
+                <span className="font-bold text-emerald-400">{roverLat}° N</span>
+              </div>
+              <div className="flex justify-between border-b border-zinc-800/60 pb-2">
+                <span className="text-zinc-500">GPS_LONGITUDE:</span>
+                <span className="font-bold text-emerald-400">{roverLng}° E</span>
+              </div>
+              <div className="flex justify-between border-b border-zinc-800/60 pb-2">
+                <span className="text-zinc-500">TIMESTAMP:</span>
+                <span className="font-bold text-amber-400">{telemetry.timestamp ?? "14:40:02"}</span>
+              </div>
+              <div className="flex justify-between border-b border-zinc-800/60 pb-2">
+                <span className="text-zinc-500">RTK_FIX_STATUS:</span>
+                <span className="font-bold text-cyan-400">DUAL_BAND_LOCK_OK</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-[10px] text-zinc-500 font-mono text-right border-t border-zinc-800 pt-2">
+            TELEMETRY_PATH: /REGRIS-01/gps
+          </div>
         </div>
       </div>
     </div>
