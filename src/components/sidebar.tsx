@@ -108,25 +108,25 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group relative flex items-center justify-between px-3 py-2.5 border transition-all duration-150 font-mono",
+                  "group relative flex items-center justify-between px-3 py-2.5 border transition-all duration-200 ease-in-out font-mono",
                   isActive
-                    ? "bg-[#18181B] border-amber-500/60 text-amber-400 shadow-[inset_3px_0_0_#F59E0B]"
-                    : "bg-[#09090B] border-[#27272A] text-zinc-400 hover:text-zinc-100 hover:bg-[#121215] hover:border-zinc-700"
+                    ? "bg-[#042F2E] border-emerald-500/60 text-emerald-400 shadow-[inset_3px_0_0_#10B981]"
+                    : "bg-[#09090B] border-[#27272A] text-zinc-400 hover:text-emerald-300 hover:bg-[#06201e] hover:border-emerald-800/40"
                 )}
               >
                 <div className="flex items-center gap-2.5">
                   <Icon
                     className={cn(
-                      "w-4 h-4 shrink-0",
-                      isActive ? "text-amber-400" : "text-zinc-500 group-hover:text-zinc-300"
+                      "w-4 h-4 shrink-0 transition-colors duration-200",
+                      isActive ? "text-emerald-400" : "text-zinc-500 group-hover:text-emerald-400"
                     )}
                   />
                   <span className="truncate tracking-tight font-medium text-[11px]">{item.title}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className={cn(
-                    "text-[9px] px-1 py-0.5 border font-mono",
-                    isActive ? "border-amber-500/40 text-amber-400 bg-amber-500/10" : "border-[#27272A] text-zinc-600"
+                    "text-[9px] px-1 py-0.5 border font-mono transition-colors duration-200",
+                    isActive ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10" : "border-[#27272A] text-zinc-600 group-hover:border-emerald-800/40 group-hover:text-emerald-400"
                   )}>
                     {item.code}
                   </span>
