@@ -261,12 +261,22 @@ export default function OperationsPage() {
               1080P @ 60FPS // H.265
             </div>
 
+            {/* Dead Center Crosshair Reticle */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-15">
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 border border-white/40 rounded-full" />
+                <div className="absolute top-1/2 left-[-12px] right-[-12px] h-[1px] bg-white/40 -translate-y-1/2" />
+                <div className="absolute left-1/2 top-[-12px] bottom-[-12px] w-[1px] bg-white/40 -translate-x-1/2" />
+                <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-emerald-400 rounded-full -translate-x-1/2 -translate-y-1/2 animate-ping" />
+              </div>
+            </div>
+
             {/* activeCam === 'plant': Dark overlay with green/amber bounding boxes simulating YOLO-World crop detection */}
             {activeCam === "plant" && (
               <div className="relative w-full h-full bg-gradient-to-br from-amber-950/20 via-[#060608] to-zinc-950 flex items-center justify-center p-6">
                 <div className="relative w-full h-full border border-zinc-800 flex items-center justify-center">
-                  {/* Bounding Box 1: Green (Healthy Crop) */}
-                  <div className="absolute top-[16%] left-[18%] w-44 h-32 border-2 border-emerald-500 bg-emerald-500/10 p-1.5 flex flex-col justify-between shadow-lg">
+                  {/* Bounding Box 1: Green (Healthy Crop) with Animated Pulse */}
+                  <div className="absolute top-[16%] left-[18%] w-44 h-32 border-2 border-emerald-500 bg-emerald-500/10 p-1.5 flex flex-col justify-between shadow-lg animate-pulse">
                     <span className="bg-emerald-500 text-black text-[9px] font-bold px-1.5 py-0.5 self-start">
                       CROP_HEALTHY [98.4%]
                     </span>
@@ -327,6 +337,31 @@ export default function OperationsPage() {
                 </div>
               </div>
             )}
+
+            {/* Bottom Scrolling Raw Hex & Telemetry Data Stream Ticker */}
+            <div className="absolute bottom-10 left-0 right-0 z-20 bg-black/90 border-y border-[#27272A] py-1 overflow-hidden pointer-events-none font-mono text-[9px] text-emerald-400/90 flex whitespace-nowrap">
+              <div className="animate-ticker space-x-6">
+                <span>RAW_HEX: 0x41 0x72 0x64 0x75 0x69 0x6E 0x6F 0x5F 0x54 0x45 0x4C 0x45 0x4D 0x45 0x54 0x52 0x59</span>
+                <span>•</span>
+                <span>PACKET_TS: {new Date().toISOString()}</span>
+                <span>•</span>
+                <span>NPU_RAW: [0xFF, 0x00, 0x3E, 0x8A, 0x12, 0xC4, 0x9D, 0x77]</span>
+                <span>•</span>
+                <span>YOLO_INFERENCE: 14.2ms</span>
+                <span>•</span>
+                <span>GPS_RTK_FIX: DUAL_BAND_L1_L5</span>
+                <span>•</span>
+                <span>RAW_HEX: 0x41 0x72 0x64 0x75 0x69 0x6E 0x6F 0x5F 0x54 0x45 0x4C 0x45 0x4D 0x45 0x54 0x52 0x59</span>
+                <span>•</span>
+                <span>PACKET_TS: {new Date().toISOString()}</span>
+                <span>•</span>
+                <span>NPU_RAW: [0xFF, 0x00, 0x3E, 0x8A, 0x12, 0xC4, 0x9D, 0x77]</span>
+                <span>•</span>
+                <span>YOLO_INFERENCE: 14.2ms</span>
+                <span>•</span>
+                <span>GPS_RTK_FIX: DUAL_BAND_L1_L5</span>
+              </div>
+            </div>
 
             {/* Bottom HUD Bar inside Video Container */}
             <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-between items-center text-[10px] text-zinc-400 bg-[#09090B]/90 border border-[#27272A] px-3 py-1.5 backdrop-blur-md">
