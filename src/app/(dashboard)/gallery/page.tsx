@@ -1,132 +1,93 @@
-"use client"
+'use client';
+import { motion } from 'framer-motion';
+import { MapPin, Clock, Download, AlertTriangle, Leaf } from 'lucide-react';
 
-import * as React from "react"
-import { MapPin, Clock, HardDrive, FolderGit2 } from "lucide-react"
+const mockPhotos = [
+  { id: 'CAP-0942', disease: 'Severe Blight', severity: 'red', lat: '13.1245', lng: '77.5671', time: '10:42 AM', date: 'Sep 13' },
+  { id: 'CAP-0941', disease: 'Mild Stress', severity: 'amber', lat: '13.1238', lng: '77.5680', time: '09:15 AM', date: 'Sep 13' },
+  { id: 'CAP-0940', disease: 'Healthy Crop', severity: 'emerald', lat: '13.1221', lng: '77.5691', time: '08:30 AM', date: 'Sep 13' },
+  { id: 'CAP-0939', disease: 'Pest Damage', severity: 'red', lat: '13.1250', lng: '77.5665', time: '07:45 AM', date: 'Sep 13' },
+];
 
-interface Photo {
-  id: number
-  disease: string
-  severity: "red" | "amber" | "emerald"
-  lat: string
-  lng: string
-  time: string
-  autoDeleteDays: number
-  imgRef: string
-}
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
 
-const mockPhotos: Photo[] = [
-  { id: 1, disease: "Severe Blight", severity: "red", lat: "13.1245", lng: "77.5671", time: "10:42 AM", autoDeleteDays: 5, imgRef: "IMG_REF_01" },
-  { id: 2, disease: "Mild Stress", severity: "amber", lat: "13.1238", lng: "77.5680", time: "09:15 AM", autoDeleteDays: 5, imgRef: "IMG_REF_02" },
-  { id: 3, disease: "Fungal Spot", severity: "red", lat: "13.1251", lng: "77.5665", time: "08:45 AM", autoDeleteDays: 4, imgRef: "IMG_REF_03" },
-  { id: 4, disease: "Healthy Crop", severity: "emerald", lat: "13.1229", lng: "77.5692", time: "08:10 AM", autoDeleteDays: 4, imgRef: "IMG_REF_04" },
-  { id: 5, disease: "Pest Activity", severity: "amber", lat: "13.1260", lng: "77.5658", time: "07:30 AM", autoDeleteDays: 3, imgRef: "IMG_REF_05" },
-  { id: 6, disease: "Severe Rust", severity: "red", lat: "13.1215", lng: "77.5704", time: "06:55 AM", autoDeleteDays: 3, imgRef: "IMG_REF_06" },
-  { id: 7, disease: "Chlorosis", severity: "amber", lat: "13.1272", lng: "77.5642", time: "06:20 AM", autoDeleteDays: 2, imgRef: "IMG_REF_07" },
-  { id: 8, disease: "Healthy Crop", severity: "emerald", lat: "13.1208", lng: "77.5718", time: "05:40 AM", autoDeleteDays: 1, imgRef: "IMG_REF_08" },
-]
+const item = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
+};
 
 export default function GalleryPage() {
-  const [isMounted, setIsMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  const getBadgeStyle = (severity: "red" | "amber" | "emerald") => {
-    switch (severity) {
-      case "red":
-        return "bg-red-500/20 text-red-400 border-red-500/50"
-      case "amber":
-        return "bg-amber-500/20 text-amber-400 border-amber-500/50"
-      case "emerald":
-      default:
-        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
-    }
-  }
-
-  if (!isMounted) {
-    return (
-      <div className="p-6 text-white font-mono bg-[#09090B] min-h-screen flex items-center justify-center text-xs text-amber-500">
-        LOADING_DETECTION_VAULT...
-      </div>
-    )
-  }
-
   return (
-    <div className="p-6 text-white font-mono bg-[#09090B] min-h-screen space-y-6">
-      {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-4 border-b border-zinc-800">
-        <div>
-          <h1 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            <FolderGit2 className="w-5 h-5 text-amber-500" />
-            <span>REGRIS // Detection Vault</span>
-          </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            YOLO-WORLD CAPTURED PLANT IMAGERY & AUTO-DELETION TRACKER
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-zinc-400 bg-zinc-900 px-3 py-1 border border-zinc-800 rounded flex items-center gap-1.5">
-            <HardDrive className="w-3.5 h-3.5 text-amber-500" />
-            <span>Storage capped at 500MB</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Grid of Photo Cards (grid-cols-1 md:grid-cols-3 lg:grid-cols-4) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {mockPhotos.map((photo) => (
-          <div
-            key={photo.id}
-            className="bg-zinc-900 border border-zinc-800 rounded overflow-hidden flex flex-col group hover:border-zinc-700 transition-colors shadow-lg"
-          >
-            {/* Image Placeholder Viewport Container */}
-            <div className="h-40 bg-zinc-950 flex items-center justify-center relative border-b border-zinc-800 overflow-hidden select-none">
-              {/* Plant Image Grid Graphic SVG */}
-              <svg className="w-full h-full text-zinc-800/40" viewBox="0 0 200 100" fill="none">
-                <rect width="200" height="100" fill="#060608" />
-                <circle cx="100" cy="50" r="35" stroke={photo.severity === "red" ? "#EF4444" : photo.severity === "amber" ? "#F59E0B" : "#10B981"} strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
-                <path d="M70 70 Q100 20 130 70" stroke={photo.severity === "red" ? "#EF4444" : photo.severity === "amber" ? "#F59E0B" : "#10B981"} strokeWidth="1.5" fill="none" opacity="0.6" />
-                <line x1="100" y1="0" x2="100" y2="100" stroke="#27272A" strokeDasharray="2 2" />
-                <line x1="0" y1="50" x2="200" y2="50" stroke="#27272A" strokeDasharray="2 2" />
-              </svg>
-
-              {/* Center Image Reference Tag */}
-              <span className="absolute text-zinc-600 font-bold text-xs tracking-wider group-hover:text-zinc-400 transition-colors">
-                {photo.imgRef}
-              </span>
-
-              {/* Top Right Severity Badge */}
-              <span
-                className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-1 rounded border backdrop-blur-md ${getBadgeStyle(
-                  photo.severity
-                )}`}
-              >
-                {photo.disease}
-              </span>
-            </div>
-
-            {/* Metadata Footer */}
-            <div className="p-3 text-xs text-zinc-400 space-y-2">
-              <div className="flex items-center gap-2 text-zinc-300">
-                <MapPin size={12} className="text-amber-500 shrink-0" />
-                <span>
-                  {photo.lat}, {photo.lng}
-                </span>
-              </div>
-              <div className="flex justify-between items-center pt-1 border-t border-zinc-800/80">
-                <span className="flex items-center gap-1.5 text-zinc-400">
-                  <Clock size={12} className="text-zinc-500 shrink-0" />
-                  <span>{photo.time}</span>
-                </span>
-                <span className="text-zinc-500 font-mono text-[11px]">
-                  Deletes in {photo.autoDeleteDays}d
-                </span>
-              </div>
-            </div>
+    <div className="space-y-6 text-white font-mono h-full flex flex-col">
+      <div className="flex justify-between items-center bg-zinc-950/50 backdrop-blur-md border border-white/5 p-4 rounded-xl shadow-xl">
+        <h1 className="text-lg font-bold flex items-center gap-2">
+          <Leaf className="text-emerald-500" size={20} /> 
+          REGRIS // Detection Vault
+        </h1>
+        <div className="flex items-center gap-4">
+          <span className="text-xs text-zinc-400">STORAGE: 142MB / 500MB</span>
+          <div className="w-32 h-2 bg-black/50 rounded-full overflow-hidden border border-white/5">
+            <div className="h-full bg-emerald-500 w-[28%]" />
           </div>
-        ))}
+        </div>
       </div>
+
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {mockPhotos.map((photo) => (
+          <motion.div 
+            key={photo.id}
+            variants={item}
+            className="bg-zinc-950/50 backdrop-blur-md border border-white/5 rounded-xl overflow-hidden flex flex-col group hover:border-white/20 transition-all hover:shadow-2xl hover:shadow-emerald-900/10"
+          >
+            {/* Image Placeholder with Thermal/Scan Aesthetic */}
+            <div className="h-48 bg-[#020202] flex items-center justify-center relative overflow-hidden">
+               {/* Scanning Grid Background */}
+               <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
+               
+               <span className="text-zinc-700 font-bold tracking-widest z-10">{photo.id}</span>
+               
+               {/* Dynamic Severity Badge */}
+               <span className={`absolute top-3 right-3 text-[10px] font-bold px-3 py-1.5 rounded flex items-center gap-1 backdrop-blur-md border ${
+                 photo.severity === 'red' 
+                   ? 'bg-red-500/20 text-red-400 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                   : photo.severity === 'amber'
+                   ? 'bg-amber-500/20 text-amber-400 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                   : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+               }`}>
+                 {photo.severity === 'emerald' ? <Leaf size={12} /> : <AlertTriangle size={12} />}
+                 {photo.disease}
+               </span>
+
+               {/* Hover Overlay Action */}
+               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                 <button className="bg-white/10 hover:bg-white/20 text-white p-3 rounded-full border border-white/20 transition-all transform scale-75 group-hover:scale-100">
+                   <Download size={18} />
+                 </button>
+               </div>
+            </div>
+            
+            {/* Metadata Footer */}
+            <div className="p-4 text-xs text-zinc-400 space-y-3 bg-gradient-to-t from-black/40 to-transparent">
+              <div className="flex items-center gap-2 text-zinc-300">
+                <MapPin size={14} className="text-emerald-500" /> {photo.lat}, {photo.lng}
+              </div>
+              <div className="flex justify-between items-center border-t border-white/5 pt-3">
+                <span className="flex items-center gap-2">
+                  <Clock size={14} className="text-emerald-500" /> {photo.date} - {photo.time}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
-  )
+  );
 }
