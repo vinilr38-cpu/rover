@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
-import { HermesChatFab } from "@/components/hermes-chat-fab";
+import ChatbotDrawer from "@/components/ChatbotDrawer";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -48,8 +48,8 @@ export default function RootLayout({
             </div>
           </main>
 
-          {/* Hermes Agent Floating Action Button (FAB) & Copilot Chat Sheet */}
-          <HermesChatFab />
+          {/* Chatbot Drawer Component */}
+          <ChatbotDrawer />
         </ThemeProvider>
       </body>
     </html>
