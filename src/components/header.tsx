@@ -101,7 +101,7 @@ export function Header() {
   }, [])
 
   return (
-    <header className="fixed top-0 md:left-72 left-0 right-0 h-16 z-30 bg-[#0D0D11]/90 border-b border-white/5 px-6 flex items-center justify-between font-mono text-xs backdrop-blur-md select-none">
+    <header className="h-16 shrink-0 z-30 bg-[#0D0D11]/90 border-b border-white/5 px-6 flex items-center justify-between font-mono text-xs backdrop-blur-md select-none w-full">
       {/* Rover IP/ID Input Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 bg-[#09090B] border border-[#27272A] px-3 py-1.5 focus-within:border-amber-500 transition-colors">
