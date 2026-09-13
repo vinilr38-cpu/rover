@@ -6,8 +6,6 @@ import { db } from '@/lib/firebase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Download } from 'lucide-react';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 
 // Dynamically import RoverMap with { ssr: false } to prevent window undefined errors
 const RoverMap = dynamic(() => import('@/components/RoverMap'), { ssr: false });
@@ -56,6 +54,11 @@ export default function ReportsPage() {
     if (!reportRef.current || isExporting) return;
     setIsExporting(true);
     try {
+      // Dynamically import client-only PDF generation libraries
+      const { jsPDF } = await import('jspdf');
+      const html2canvasModule = await import('html2canvas');
+      const html2canvas = html2canvasModule.default || html2canvasModule;
+
       const canvas = await html2canvas(reportRef.current, {
         backgroundColor: '#09090B',
         scale: 2,

@@ -9,5 +9,5 @@ const firebaseConfig = {
 // Initialize Firebase App singleton safely for Next.js SSR
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-export const db = (typeof window !== "undefined" ? getDatabase(app) : ({} as Database));
-export const auth = (typeof window !== "undefined" ? getAuth(app) : ({} as Auth));
+export const db: Database = typeof window !== "undefined" ? getDatabase(app) : ({} as Database);
+export const auth: Auth = typeof window !== "undefined" ? getAuth(app) : ({} as Auth);
