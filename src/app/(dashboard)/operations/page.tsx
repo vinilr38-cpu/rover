@@ -92,7 +92,7 @@ export default function OperationsPage() {
     return (
       <div className="space-y-6 font-mono text-xs select-none">
         {/* Top Status Bar Skeleton */}
-        <div className="p-4 bg-[#0D0D11] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+        <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
           <div className="flex items-center gap-3">
             <Skeleton className="w-9 h-9 bg-zinc-800" />
             <div className="space-y-2">
@@ -110,7 +110,7 @@ export default function OperationsPage() {
         {/* Main Operations Grid: Video Container (2 cols) & Terminal Log Sidebar (1 col) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main 16:9 Video Container Section Skeleton (2 cols) */}
-          <div className="lg:col-span-2 space-y-4 p-5 bg-[#0D0D11] border border-[#27272A]">
+          <div className="lg:col-span-2 space-y-4 p-5 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl">
             <div className="flex justify-between items-center border-b border-[#27272A] pb-3">
               <div className="flex gap-2">
                 <Skeleton className="h-9 w-48 bg-zinc-800" />
@@ -124,7 +124,7 @@ export default function OperationsPage() {
           </div>
 
           {/* Terminal-Style Log Component Sidebar Skeleton (1 col) */}
-          <div className="p-5 bg-[#0D0D11] border border-[#27272A] flex flex-col space-y-3">
+          <div className="p-5 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl flex flex-col space-y-3">
             <div className="flex justify-between items-center border-b border-[#27272A] pb-3">
               <Skeleton className="h-5 w-44 bg-zinc-800" />
               <Skeleton className="h-4 w-20 bg-zinc-800" />
@@ -143,7 +143,7 @@ export default function OperationsPage() {
   return (
     <div className="space-y-6 font-mono text-xs select-none">
       {/* 2. Top Status Bar */}
-      <div className="p-4 bg-[#0D0D11] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+      <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-amber-500/10 border border-amber-500/30 text-amber-500">
             <Radio className="w-5 h-5 animate-pulse" />
@@ -212,7 +212,7 @@ export default function OperationsPage() {
       {/* Main Grid: Camera Video Container (2 cols) & Terminal Log Sidebar (1 col) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main 16:9 Video Container Section (2 cols) */}
-        <div className="lg:col-span-2 space-y-4 p-5 bg-[#0D0D11] border border-[#27272A]">
+        <div className="lg:col-span-2 space-y-4 p-5 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl">
           {/* Camera Selection Controls Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-3">
             <div className="flex items-center gap-2">
@@ -373,7 +373,7 @@ export default function OperationsPage() {
         </div>
 
         {/* 4. Terminal-Style Log Component Sidebar */}
-        <div className="p-5 bg-[#0D0D11] border border-[#27272A] flex flex-col space-y-3">
+        <div className="p-5 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl flex flex-col space-y-3">
           <div className="flex justify-between items-center border-b border-[#27272A] pb-3 text-xs">
             <span className="font-bold text-zinc-200 flex items-center gap-2">
               <TerminalIcon className="w-4 h-4 text-emerald-400" />

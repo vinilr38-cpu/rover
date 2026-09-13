@@ -97,7 +97,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Infection Analytics Chart Container Skeleton */}
-        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded space-y-4">
+        <div className="p-4 bg-zinc-955/50 backdrop-blur-md border border-white/5 shadow-xl rounded space-y-4">
           <div className="flex justify-between items-center">
             <Skeleton className="h-6 w-44 bg-zinc-800" />
             <Skeleton className="h-9 w-32 bg-zinc-800" />
@@ -118,7 +118,7 @@ export default function ReportsPage() {
   const roverLng = telemetry.gps?.lng ?? 77.5678;
 
   return (
-    <div className="p-6 space-y-6 text-white font-mono bg-[#09090B] min-h-screen">
+    <div className="p-6 space-y-6 text-white font-mono bg-transparent min-h-screen">
       {/* Top Header with Page Title & Emerald-Outlined Download PDF Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl font-bold">REGRIS Command Center // Telemetry Feed</h1>
@@ -133,29 +133,29 @@ export default function ReportsPage() {
       </div>
 
       {/* Printable Report Content Container (KPI Cards, Chart, and Map/Log Grid) */}
-      <div ref={reportRef} className="space-y-6 bg-[#09090B] p-2 rounded">
+      <div ref={reportRef} className="space-y-6 bg-transparent p-2 rounded">
         {/* Existing KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded">
+          <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded">
             <p className="text-xs text-zinc-400">BATTERY LEVEL</p>
             <p className="text-2xl font-bold text-emerald-400">{telemetry.hardware?.battery_pct ?? 0}%</p>
           </div>
-          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded">
+          <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded">
             <p className="text-xs text-zinc-400">PESTICIDE TANK</p>
             <p className="text-2xl font-bold text-amber-400">{telemetry.hardware?.tank_pct ?? 0}%</p>
           </div>
-          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded">
+          <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded">
             <p className="text-xs text-zinc-400">LATEST INFECTION</p>
             <p className="text-2xl font-bold text-red-500">{telemetry.ai_detection?.disease ?? "Healthy"}</p>
           </div>
-          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded">
+          <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded">
             <p className="text-xs text-zinc-400">DOSAGE APPLIED</p>
             <p className="text-2xl font-bold">{telemetry.ai_detection?.dosage_ml ?? 0} ml</p>
           </div>
         </div>
 
         {/* Infection Analytics Chart */}
-        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded">
+        <div className="p-4 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-zinc-300">Infection Analytics</h2>
             <select 
@@ -193,13 +193,13 @@ export default function ReportsPage() {
 
         {/* Dynamic Map & Mission Log 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column: Dynamic RoverMap inside h-80 border-zinc-800 Container */}
-          <div className="h-80 w-full bg-zinc-900 border border-zinc-800 rounded overflow-hidden relative">
+          {/* Left Column: Dynamic RoverMap inside h-80 Container */}
+          <div className="h-80 w-full bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded overflow-hidden relative">
             <RoverMap lat={roverLat} lng={roverLng} />
           </div>
 
           {/* Right Column: Mission Log Card Terminal-Style List */}
-          <div className="h-80 p-5 bg-zinc-900 border border-zinc-800 rounded flex flex-col justify-between font-mono">
+          <div className="h-80 p-5 bg-zinc-950/50 backdrop-blur-md border border-white/5 shadow-xl rounded flex flex-col justify-between font-mono">
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-emerald-400 border-b border-zinc-800 pb-2 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

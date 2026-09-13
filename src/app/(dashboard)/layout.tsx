@@ -24,7 +24,7 @@ export default function DashboardLayout({
       <Header />
 
       {/* Main Content Area (Offset left by 64, top by 16 for header) */}
-      <main className="flex-1 pl-64 pt-16 min-h-screen bg-[#09090B] industrial-grid font-mono">
+      <main className="flex-1 pl-64 pt-16 min-h-screen bg-[#050505] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-zinc-900/20 via-[#050505] to-[#050505] industrial-grid font-mono">
         <div className="p-6 md:p-8 max-w-7xl mx-auto">
           <PageTransition>
             {children}
